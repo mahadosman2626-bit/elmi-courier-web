@@ -1,65 +1,57 @@
-import Image from "next/image";
+'use client';
+import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
+import PublicNav from '@/components/PublicNav';
 
-export default function Home() {
+export default function LandingPage() {
+  const router = useRouter();
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen flex flex-col" style={{ background: 'var(--background)' }}>
+      <PublicNav />
+
+      {/* Hero */}
+      <section className="flex flex-col items-center justify-center text-center px-6 py-32" style={{ background: 'var(--primary)' }}>
+        <div className="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6 tracking-widest" style={{ background: 'rgba(249,115,22,0.18)', color: '#F97316' }}>
+          SAME-DAY VAN DELIVERY · UK
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <h1 className="text-5xl md:text-6xl font-extrabold text-white max-w-3xl leading-tight tracking-tight mb-6">
+          Book a vetted driver.<br /><span style={{ color: '#F97316' }}>In minutes.</span>
+        </h1>
+        <p className="text-lg max-w-xl mb-10" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          Post a job, pay securely, and track your delivery live. Elmi connects UK businesses with trusted van drivers.
+        </p>
+        <div className="flex gap-4 flex-wrap justify-center">
+          <button onClick={() => router.push('/register?role=business')} className="px-8 py-4 rounded-2xl text-base font-bold text-white hover:opacity-90 transition-opacity" style={{ background: 'var(--accent)' }}>Post a job →</button>
+          <button onClick={() => router.push('/register?role=driver')} className="px-8 py-4 rounded-2xl text-base font-bold text-white border-2 hover:bg-white/10 transition-colors" style={{ borderColor: 'rgba(255,255,255,0.3)' }}>Become a driver</button>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 px-6 max-w-5xl mx-auto w-full">
+        <h2 className="text-3xl font-extrabold text-center mb-14 tracking-tight">How it works</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { icon: '📋', title: 'Post a job', desc: 'Enter pickup, drop-off, load details and your price. Takes under 2 minutes.' },
+            { icon: '🚐', title: 'Driver accepts', desc: 'A vetted driver nearby picks up your job and heads to the collection address.' },
+            { icon: '📍', title: 'Track live', desc: 'Watch your delivery in real time. Get notified at every stage.' },
+          ].map((f) => (
+            <div key={f.title} className="bg-white rounded-2xl p-8 border" style={{ borderColor: 'var(--border)' }}>
+              <div className="text-4xl mb-4">{f.icon}</div>
+              <h3 className="text-lg font-bold mb-2">{f.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 px-6 text-center" style={{ background: 'var(--primary)' }}>
+        <h2 className="text-3xl font-extrabold text-white mb-4">Ready to send your first delivery?</h2>
+        <p className="mb-8" style={{ color: 'rgba(255,255,255,0.6)' }}>Create a free account and post your first job today.</p>
+        <button onClick={() => router.push('/register?role=business')} className="px-8 py-4 rounded-2xl text-base font-bold text-white" style={{ background: 'var(--accent)' }}>Create free account →</button>
+      </section>
+
+      <Footer />
+    </main>
   );
 }
