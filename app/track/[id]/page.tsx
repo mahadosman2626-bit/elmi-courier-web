@@ -6,14 +6,39 @@ import axios from 'axios';
 const API_BASE = 'https://elmi-courier-backend-production.up.railway.app';
 
 const STATUS_STEPS = [
-  { key: 'PENDING',    label: 'Job posted',      icon: '📋' },
-  { key: 'ACCEPTED',   label: 'Driver assigned',  icon: '🚐' },
-  { key: 'COLLECTING', label: 'Driver en route',  icon: '📍' },
-  { key: 'IN_TRANSIT', label: 'In transit',       icon: '🚚' },
-  { key: 'DELIVERED',  label: 'Delivered',        icon: '✅' },
+  {
+    key: 'POSTED',
+    label: 'Job posted',
+    icon: '📋',
+    sub: 'Your delivery has been submitted and is waiting for a driver.',
+  },
+  {
+    key: 'ACCEPTED',
+    label: 'Driver assigned',
+    icon: '🚐',
+    sub: 'A driver has accepted your delivery and is preparing to collect.',
+  },
+  {
+    key: 'COLLECTING',
+    label: 'At collection point',
+    icon: '📍',
+    sub: 'Your driver has arrived at the collection address.',
+  },
+  {
+    key: 'IN_TRANSIT',
+    label: 'On the way',
+    icon: '🚚',
+    sub: 'Your items are loaded and the driver is heading to the delivery address.',
+  },
+  {
+    key: 'DELIVERED',
+    label: 'Delivered',
+    icon: '✅',
+    sub: 'Your delivery is complete. Thank you for using Elmi.',
+  },
 ];
 
-const STATUS_ORDER = ['PENDING', 'ACCEPTED', 'COLLECTING', 'IN_TRANSIT', 'DELIVERED'];
+const STATUS_ORDER = ['POSTED', 'ACCEPTED', 'COLLECTING', 'IN_TRANSIT', 'DELIVERED'];
 
 interface Job {
   id: string;
@@ -22,6 +47,7 @@ interface Job {
   dropoffAddress: string;
   loadDescription: string;
   vanSize: string;
+  notes: string | null;
   scheduledAt: string | null;
   createdAt: string;
   deliveredAt: string | null;
@@ -42,8 +68,10 @@ export default function TrackingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchJob = async () => {
+  const fetchJob = async (showRefresh = false) => {
+    if (showRefresh) setRefreshing(true);
     try {
       const res = await axios.get(`${API_BASE}/api/jobs/${id}/track`);
       setJob(res.data);
@@ -58,38 +86,59 @@ export default function TrackingPage() {
       }
     } finally {
       setLoading(false);
+      setRefreshing(false);
       setLastUpdated(new Date());
     }
   };
 
   useEffect(() => {
     fetchJob();
-    const interval = setInterval(fetchJob, 15000);
+    const interval = setInterval(() => fetchJob(false), 15000);
     return () => clearInterval(interval);
   }, [id]);
 
   const currentIndex = job ? STATUS_ORDER.indexOf(job.status) : -1;
   const isCancelled = job?.status === 'CANCELLED';
+  const isDelivered = job?.status === 'DELIVERED';
+  const isActive = job && !isCancelled && !isDelivered;
+  const progressPct = currentIndex >= 0 ? Math.round(((currentIndex) / (STATUS_STEPS.length - 1)) * 100) : 0;
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: '#F8FAFC' }}>
 
       {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-4" style={{ background: '#0F172A' }}>
-        <button onClick={() => router.push('/')}
-          className="text-xl font-extrabold tracking-tight text-white">
+      <nav className="flex items-center justify-between px-6 py-4" style={{ background: '#0F172A' }}>
+        <button onClick={() => router.push('/')} className="text-xl font-extrabold tracking-tight text-white">
           elmi<span style={{ color: '#F97316' }}>.</span>
         </button>
-        <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}>
-          Live tracking
-        </span>
+        <div className="flex items-center gap-2">
+          {isActive && (
+            <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
+              style={{ background: 'rgba(249,115,22,0.15)', color: '#F97316' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse inline-block" />
+              Live
+            </span>
+          )}
+          {isDelivered && (
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-full"
+              style={{ background: 'rgba(22,163,74,0.15)', color: '#34D399' }}>
+              Delivered
+            </span>
+          )}
+          {isCancelled && (
+            <span className="text-xs font-semibold px-3 py-1.5 rounded-full"
+              style={{ background: 'rgba(220,38,38,0.15)', color: '#F87171' }}>
+              Cancelled
+            </span>
+          )}
+        </div>
       </nav>
 
-      <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-10 flex flex-col gap-6">
+      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 flex flex-col gap-5">
 
         {loading && (
           <div className="flex flex-col items-center justify-center py-24">
-            <div className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin mb-4"
+            <div className="w-10 h-10 rounded-full border-4 animate-spin mb-4"
               style={{ borderColor: '#1E3A8A', borderTopColor: 'transparent' }} />
             <p className="text-sm" style={{ color: '#64748B' }}>Loading tracking info…</p>
           </div>
@@ -97,10 +146,10 @@ export default function TrackingPage() {
 
         {!loading && error && (
           <div className="bg-white rounded-2xl p-10 border text-center" style={{ borderColor: '#E2E8F0' }}>
-            <p className="text-4xl mb-4">🔍</p>
+            <p className="text-5xl mb-4">🔍</p>
             <h2 className="text-xl font-extrabold mb-2">Delivery not found</h2>
             <p className="text-sm mb-6" style={{ color: '#64748B' }}>
-              This tracking link may have expired or the job ID is incorrect. Check your confirmation email for the correct link.
+              This tracking link may have expired or is incorrect. Check your confirmation message for the correct link.
             </p>
             <a href="mailto:support@elmicourier.co.uk"
               className="inline-block px-6 py-3 rounded-xl text-white text-sm font-bold"
@@ -112,27 +161,66 @@ export default function TrackingPage() {
 
         {!loading && job && (
           <>
+            {/* Delivered celebration */}
+            {isDelivered && (
+              <div className="rounded-2xl px-6 py-5 flex items-center gap-4"
+                style={{ background: 'linear-gradient(135deg, #052e16 0%, #14532d 100%)', border: '1px solid #166534' }}>
+                <span className="text-4xl">🎉</span>
+                <div>
+                  <p className="text-white font-extrabold text-lg">Delivered!</p>
+                  <p className="text-sm mt-0.5" style={{ color: '#86EFAC' }}>
+                    {job.deliveredAt ? `Completed at ${fmt(job.deliveredAt)}` : 'Your delivery is complete.'}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Cancelled state */}
+            {isCancelled && (
+              <div className="rounded-2xl px-6 py-5 flex items-center gap-4"
+                style={{ background: '#FEF2F2', border: '2px solid #FECACA' }}>
+                <span className="text-4xl">❌</span>
+                <div>
+                  <p className="font-extrabold text-sm" style={{ color: '#991B1B' }}>Delivery cancelled</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#DC2626' }}>
+                    This delivery was cancelled. Please contact the business if you need to rearrange.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Header card */}
             <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: '#E2E8F0' }}>
               <div className="px-6 py-5" style={{ background: '#0F172A' }}>
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                    Job #{id.slice(-6).toUpperCase()}
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                    Ref #{id.slice(-6).toUpperCase()}
                   </p>
-                  {isCancelled
-                    ? <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#FEF2F2', color: '#DC2626' }}>Cancelled</span>
-                    : job.status === 'DELIVERED'
-                      ? <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: '#F0FDF4', color: '#16A34A' }}>Delivered</span>
-                      : <span className="px-3 py-1 rounded-full text-xs font-bold animate-pulse" style={{ background: 'rgba(249,115,22,0.2)', color: '#F97316' }}>Live</span>
-                  }
+                  <button onClick={() => fetchJob(true)}
+                    className="text-xs font-semibold px-2.5 py-1 rounded-lg transition-opacity"
+                    style={{ background: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)', opacity: refreshing ? 0.5 : 1 }}>
+                    {refreshing ? '↻ Refreshing…' : '↻ Refresh'}
+                  </button>
                 </div>
                 <h1 className="text-white font-extrabold text-lg leading-snug">
                   {job.pickupAddress.split(',')[0]} → {job.dropoffAddress.split(',')[0]}
                 </h1>
-                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  Updated {lastUpdated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                <p className="text-xs mt-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                  Last updated {lastUpdated.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  {isActive && <span className="ml-2" style={{ color: 'rgba(249,115,22,0.7)' }}>· auto-refreshes every 15s</span>}
                 </p>
               </div>
+
+              {/* Progress bar */}
+              {!isCancelled && (
+                <div className="h-1.5 w-full" style={{ background: '#1E293B' }}>
+                  <div className="h-full transition-all duration-700"
+                    style={{
+                      width: `${progressPct}%`,
+                      background: isDelivered ? '#16A34A' : 'linear-gradient(90deg, #1E3A8A, #3B82F6)',
+                    }} />
+                </div>
+              )}
 
               {/* Addresses */}
               <div className="divide-y" style={{ borderColor: '#F1F5F9' }}>
@@ -156,8 +244,8 @@ export default function TrackingPage() {
             {/* Status timeline */}
             {!isCancelled && (
               <div className="bg-white rounded-2xl border p-6" style={{ borderColor: '#E2E8F0' }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-5" style={{ color: '#64748B' }}>Status</p>
-                <div className="flex flex-col gap-0">
+                <p className="text-xs font-bold uppercase tracking-widest mb-5" style={{ color: '#64748B' }}>Delivery progress</p>
+                <div className="flex flex-col">
                   {STATUS_STEPS.map((step, i) => {
                     const done = i <= currentIndex;
                     const active = i === currentIndex;
@@ -165,27 +253,40 @@ export default function TrackingPage() {
                     return (
                       <div key={step.key} className="flex items-start gap-4">
                         <div className="flex flex-col items-center flex-shrink-0">
-                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-base"
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all"
                             style={{
-                              background: done ? '#1E3A8A' : '#F1F5F9',
-                              boxShadow: active ? '0 0 0 4px rgba(30,58,138,0.15)' : 'none',
+                              background: done ? (isDelivered && active ? '#16A34A' : '#1E3A8A') : '#F1F5F9',
+                              boxShadow: active && !isDelivered ? '0 0 0 5px rgba(30,58,138,0.12)' : 'none',
                             }}>
-                            {done ? <span style={{ filter: 'brightness(10)' }}>{step.icon}</span> : <span style={{ opacity: 0.3 }}>{step.icon}</span>}
+                            <span style={{ filter: done ? 'brightness(10)' : 'none', opacity: done ? 1 : 0.25 }}>
+                              {step.icon}
+                            </span>
                           </div>
                           {!isLast && (
-                            <div className="w-0.5 h-8" style={{ background: done && i < currentIndex ? '#1E3A8A' : '#E2E8F0' }} />
+                            <div className="w-0.5 h-10 transition-colors"
+                              style={{ background: done && i < currentIndex ? '#1E3A8A' : '#E2E8F0' }} />
                           )}
                         </div>
-                        <div className="pt-1.5 pb-8" style={{ paddingBottom: isLast ? 0 : 'auto' }}>
-                          <p className="text-sm font-semibold" style={{ color: done ? '#0F172A' : '#94A3B8' }}>
-                            {step.label}
-                            {active && <span className="ml-2 text-xs font-bold" style={{ color: '#F97316' }}>← Now</span>}
-                          </p>
-                          {active && job.status === 'DELIVERED' && job.deliveredAt && (
-                            <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>{fmt(job.deliveredAt)}</p>
+                        <div className={`pt-1.5 ${isLast ? 'pb-0' : 'pb-0'} flex-1 min-w-0`} style={{ paddingBottom: isLast ? 0 : '2rem' }}>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-sm font-semibold" style={{ color: done ? '#0F172A' : '#CBD5E1' }}>
+                              {step.label}
+                            </p>
+                            {active && (
+                              <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+                                style={{
+                                  background: isDelivered ? '#DCFCE7' : 'rgba(249,115,22,0.12)',
+                                  color: isDelivered ? '#16A34A' : '#F97316',
+                                }}>
+                                {isDelivered ? 'Complete' : 'Now'}
+                              </span>
+                            )}
+                          </div>
+                          {active && (
+                            <p className="text-xs mt-0.5" style={{ color: '#94A3B8' }}>{step.sub}</p>
                           )}
-                          {active && job.status === 'PENDING' && (
-                            <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>Waiting for a driver to accept</p>
+                          {active && step.key === 'DELIVERED' && job.deliveredAt && (
+                            <p className="text-xs mt-0.5 font-medium" style={{ color: '#16A34A' }}>{fmt(job.deliveredAt)}</p>
                           )}
                         </div>
                       </div>
@@ -205,49 +306,62 @@ export default function TrackingPage() {
                     {job.driver.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1">
-                    <p className="font-extrabold text-base" style={{ color: '#0F172A' }}>{job.driver.name}</p>
-                    <p className="text-sm" style={{ color: '#64748B' }}>
-                      ⭐ {job.driver.driverProfile?.averageRating?.toFixed(1) ?? '—'} · {job.driver.driverProfile?.totalJobs ?? 0} jobs completed
+                    <p className="font-extrabold text-sm" style={{ color: '#0F172A' }}>{job.driver.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>
+                      ⭐ {job.driver.driverProfile?.averageRating?.toFixed(1) ?? '—'} · {job.driver.driverProfile?.totalJobs ?? 0} completed jobs
                     </p>
                     {job.driver.driverProfile?.vanType && (
-                      <p className="text-xs mt-0.5" style={{ color: '#94A3B8' }}>{job.driver.driverProfile.vanType}</p>
+                      <p className="text-xs mt-0.5" style={{ color: '#94A3B8' }}>🚐 {job.driver.driverProfile.vanType}</p>
                     )}
                   </div>
-                  <div className="flex flex-col items-center px-4 py-2 rounded-xl" style={{ background: '#F0FDF4' }}>
+                  <div className="flex flex-col items-center px-3 py-2 rounded-xl flex-shrink-0"
+                    style={{ background: '#F0FDF4', border: '1px solid #BBF7D0' }}>
                     <span className="text-xs font-bold" style={{ color: '#16A34A' }}>Verified</span>
-                    <span className="text-xs mt-0.5" style={{ color: '#16A34A' }}>✓</span>
+                    <span className="text-base">✓</span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Job info */}
+            {/* Delivery details */}
             <div className="bg-white rounded-2xl border p-6" style={{ borderColor: '#E2E8F0' }}>
               <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#64748B' }}>Delivery details</p>
               <dl className="flex flex-col gap-2.5 text-sm">
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-4">
                   <dt style={{ color: '#64748B' }}>Load</dt>
-                  <dd className="font-medium text-right max-w-[60%]" style={{ color: '#0F172A' }}>{job.loadDescription}</dd>
+                  <dd className="font-medium text-right" style={{ color: '#0F172A' }}>{job.loadDescription}</dd>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between gap-4">
                   <dt style={{ color: '#64748B' }}>Van size</dt>
                   <dd className="font-medium" style={{ color: '#0F172A' }}>{job.vanSize}</dd>
                 </div>
-                <div className="flex justify-between">
+                {job.notes && (
+                  <div className="flex justify-between gap-4">
+                    <dt style={{ color: '#64748B' }}>Notes</dt>
+                    <dd className="font-medium text-right" style={{ color: '#0F172A' }}>{job.notes}</dd>
+                  </div>
+                )}
+                <div className="flex justify-between gap-4">
                   <dt style={{ color: '#64748B' }}>Booked</dt>
                   <dd className="font-medium" style={{ color: '#0F172A' }}>{fmt(job.createdAt)}</dd>
                 </div>
+                {job.scheduledAt && (
+                  <div className="flex justify-between gap-4">
+                    <dt style={{ color: '#64748B' }}>Scheduled for</dt>
+                    <dd className="font-medium" style={{ color: '#0F172A' }}>{fmt(job.scheduledAt)}</dd>
+                  </div>
+                )}
                 {job.deliveredAt && (
-                  <div className="flex justify-between">
-                    <dt style={{ color: '#64748B' }}>Delivered</dt>
-                    <dd className="font-medium" style={{ color: '#16A34A' }}>{fmt(job.deliveredAt)}</dd>
+                  <div className="flex justify-between gap-4">
+                    <dt style={{ color: '#64748B' }}>Delivered at</dt>
+                    <dd className="font-semibold" style={{ color: '#16A34A' }}>{fmt(job.deliveredAt)}</dd>
                   </div>
                 )}
               </dl>
             </div>
 
             {/* Help */}
-            <div className="text-center pb-4">
+            <div className="text-center pb-2">
               <p className="text-xs" style={{ color: '#94A3B8' }}>
                 Problem with this delivery?{' '}
                 <a href="mailto:support@elmicourier.co.uk" className="font-semibold hover:underline" style={{ color: '#1E3A8A' }}>
@@ -260,7 +374,7 @@ export default function TrackingPage() {
       </div>
 
       {/* Footer */}
-      <div className="py-6 text-center border-t" style={{ borderColor: '#E2E8F0' }}>
+      <div className="py-5 text-center border-t" style={{ borderColor: '#E2E8F0' }}>
         <button onClick={() => router.push('/')} className="text-sm font-extrabold" style={{ color: '#1E3A8A' }}>
           elmi<span style={{ color: '#F97316' }}>.</span>
         </button>
