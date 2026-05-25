@@ -1,10 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import StatusBadge from '@/components/StatusBadge';
 import api from '@/lib/api';
 
 export default function AdminJobsPage() {
+  const router = useRouter();
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
@@ -71,6 +73,8 @@ export default function AdminJobsPage() {
               <tbody>
                 {filtered.map((job, i) => (
                   <tr key={job.id}
+                    onClick={() => router.push(`/admin/jobs/${job.id}`)}
+                    className="hover:bg-gray-50 transition-colors cursor-pointer"
                     style={{ borderTop: i > 0 ? '1px solid var(--border)' : 'none' }}>
                     <td className="px-4 py-3 font-medium">
                       {job.pickupAddress?.split(',')[0]} → {job.dropoffAddress?.split(',')[0]}
@@ -88,7 +92,7 @@ export default function AdminJobsPage() {
                     </td>
                     <td className="px-4 py-3">
                       {!['DELIVERED', 'CANCELLED'].includes(job.status) && (
-                        <button onClick={() => cancelJob(job.id)} disabled={cancelling === job.id}
+                        <button onClick={(e) => { e.stopPropagation(); cancelJob(job.id); }} disabled={cancelling === job.id}
                           className="px-3 py-1.5 rounded-lg text-xs font-bold border disabled:opacity-50"
                           style={{ borderColor: '#DC2626', color: '#DC2626' }}>
                           {cancelling === job.id ? '…' : 'Cancel'}
