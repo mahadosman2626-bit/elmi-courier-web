@@ -3,88 +3,203 @@ import { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import api from '@/lib/api';
 
+interface EarningsData {
+  availableBalance: number;
+  totalEarnings: number;
+  totalJobs: number;
+  weekEarnings: number;
+  weekJobs: number;
+  monthEarnings: number;
+  monthJobs: number;
+  recentJobs: { id: string; driverEarnings: number; pickupAddress: string; dropoffAddress: string; deliveredAt: string }[];
+}
+interface BankStatus { connected: boolean; payoutsEnabled: boolean; }
+
 export default function DriverEarningsPage() {
-  const [earnings, setEarnings] = useState<any>(null);
+  const [data, setData] = useState<EarningsData | null>(null);
+  const [bankStatus, setBankStatus] = useState<BankStatus>({ connected: false, payoutsEnabled: false });
   const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState(false);
-  const [withdrawMsg, setWithdrawMsg] = useState('');
+  const [connectingBank, setConnectingBank] = useState(false);
 
-  useEffect(() => {
-    api.get('/api/driver/earnings').then((r) => { setEarnings(r.data); setLoading(false); }).catch(() => setLoading(false));
-  }, []);
+  const fetchAll = () =>
+    Promise.all([
+      api.get('/api/driver/earnings').then((r) => setData(r.data)),
+      api.get('/api/payments/driver/onboard-status').then((r) => setBankStatus(r.data)).catch(() => {}),
+    ]).finally(() => setLoading(false));
 
-  const requestWithdrawal = async () => {
-    setWithdrawing(true);
-    setWithdrawMsg('');
+  useEffect(() => { fetchAll(); }, []);
+
+  const handleConnectBank = async () => {
+    setConnectingBank(true);
     try {
-      await api.post('/api/driver/withdraw');
-      setWithdrawMsg('Withdrawal requested! Funds will arrive within 2–3 business days.');
-      api.get('/api/driver/earnings').then((r) => setEarnings(r.data));
-    } catch (err: unknown) {
-      const e = err as { response?: { data?: { error?: string } } };
-      setWithdrawMsg(e?.response?.data?.error || 'Withdrawal failed. Please try again.');
+      const { data: res } = await api.post('/api/payments/driver/onboard');
+      window.open(res.url, '_blank');
+      setTimeout(() => {
+        api.get('/api/payments/driver/onboard-status').then((r) => setBankStatus(r.data)).catch(() => {});
+      }, 3000);
+    } catch {
+      alert('Could not start bank setup. Please try again.');
+    } finally {
+      setConnectingBank(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (!bankStatus.connected || !bankStatus.payoutsEnabled) {
+      alert('Connect your bank account first before withdrawing.');
+      return;
+    }
+    if (!data?.availableBalance || data.availableBalance <= 0) {
+      alert('No balance available to withdraw.');
+      return;
+    }
+    if (!confirm(`Transfer £${data.availableBalance.toFixed(2)} to your bank account?`)) return;
+    setWithdrawing(true);
+    try {
+      const { data: res } = await api.post('/api/payments/driver/withdraw');
+      alert(res.message || 'Withdrawal initiated!');
+      fetchAll();
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'Withdrawal failed. Please try again.');
     } finally {
       setWithdrawing(false);
     }
   };
 
+  const hasBalance = (data?.availableBalance ?? 0) > 0;
+  const bankOk = bankStatus.connected && bankStatus.payoutsEnabled;
+
   return (
     <DashboardLayout>
-      <div className="p-8 max-w-2xl mx-auto">
-        <h1 className="text-2xl font-extrabold tracking-tight mb-8">Earnings</h1>
+      <div style={{ background: '#F8FAFC', minHeight: '100vh' }}>
 
-        {loading ? (
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Loading…</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {[
-                { label: 'Available to withdraw', value: `£${(earnings?.availableBalance || 0).toFixed(2)}`, color: '#16A34A', big: true },
-                { label: 'Total earned (all time)', value: `£${(earnings?.totalEarnings || 0).toFixed(2)}`, color: 'var(--primary)', big: false },
-                { label: 'Jobs completed', value: earnings?.totalJobs || 0, color: 'var(--text-primary)', big: false },
-                { label: 'Average rating', value: earnings?.averageRating ? `⭐ ${Number(earnings.averageRating).toFixed(1)}` : '—', color: 'var(--text-primary)', big: false },
-              ].map((s) => (
-                <div key={s.label} className="bg-white rounded-2xl p-6 border" style={{ borderColor: 'var(--border)' }}>
-                  <p className={`font-extrabold ${s.big ? 'text-3xl' : 'text-2xl'}`} style={{ color: s.color }}>{s.value}</p>
-                  <p className="text-xs mt-1 font-medium" style={{ color: 'var(--text-secondary)' }}>{s.label}</p>
+        {/* Dark header */}
+        <div className="px-8 pt-8 pb-8 text-center" style={{ background: '#0F172A' }}>
+          <p className="text-xs font-semibold mb-2" style={{ color: 'rgba(255,255,255,0.5)' }}>Total earned</p>
+          <p className="text-5xl font-extrabold text-white tracking-tight mb-6">
+            {loading ? '…' : `£${(data?.totalEarnings ?? 0).toFixed(2)}`}
+          </p>
+          <div className="inline-flex items-center gap-6 px-6 py-4 rounded-2xl"
+            style={{ background: 'rgba(255,255,255,0.08)' }}>
+            {[
+              { label: 'This week', value: loading ? '…' : `£${(data?.weekEarnings ?? 0).toFixed(2)}` },
+              { label: 'This month', value: loading ? '…' : `£${(data?.monthEarnings ?? 0).toFixed(2)}` },
+              { label: 'Jobs this week', value: loading ? '…' : String(data?.weekJobs ?? 0) },
+            ].map((s, i) => (
+              <div key={s.label} className="flex items-center">
+                {i > 0 && <div className="w-px h-8 mx-6" style={{ background: 'rgba(255,255,255,0.15)' }} />}
+                <div className="text-center">
+                  <p className="text-lg font-extrabold text-white">{s.value}</p>
+                  <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>{s.label}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-            {withdrawMsg && (
-              <div className="mb-6 px-4 py-3 rounded-xl text-sm font-medium"
-                style={{
-                  background: withdrawMsg.includes('requested') ? '#F0FDF4' : '#FEF2F2',
-                  color: withdrawMsg.includes('requested') ? '#16A34A' : '#DC2626',
-                }}>
-                {withdrawMsg}
+        <div className="px-6 py-6 max-w-2xl mx-auto flex flex-col gap-4">
+
+          {/* Bank account */}
+          <div className="bg-white rounded-2xl p-5 border flex items-center gap-4"
+            style={{ borderColor: bankOk ? 'rgba(16,185,129,0.3)' : '#E2E8F0' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
+              style={{ background: bankOk ? '#ECFDF5' : '#EFF6FF' }}>
+              {bankOk ? '✅' : '🏦'}
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-bold" style={{ color: '#0F172A' }}>
+                {bankOk ? 'Bank account connected' : 'Connect bank account'}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>
+                {bankOk ? 'Payouts enabled — withdraw anytime' : 'Required to receive your earnings'}
+              </p>
+            </div>
+            {!bankOk && (
+              <button onClick={handleConnectBank} disabled={connectingBank}
+                className="px-4 py-2 rounded-xl text-white text-sm font-bold disabled:opacity-50 flex-shrink-0"
+                style={{ background: '#1E3A8A' }}>
+                {connectingBank ? '…' : 'Set up'}
+              </button>
+            )}
+          </div>
+
+          {/* Available balance + withdraw */}
+          <div className="bg-white rounded-2xl p-5 border flex items-center justify-between"
+            style={{ borderColor: '#E2E8F0' }}>
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
+                style={{ background: '#FFF7ED' }}>💰</div>
+              <div>
+                <p className="text-xs font-semibold mb-1" style={{ color: '#64748B' }}>Available balance</p>
+                <p className="text-2xl font-extrabold" style={{ color: '#0F172A' }}>
+                  {loading ? '…' : `£${(data?.availableBalance ?? 0).toFixed(2)}`}
+                </p>
+              </div>
+            </div>
+            <button onClick={handleWithdraw} disabled={withdrawing || !hasBalance}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold disabled:opacity-40 flex-shrink-0"
+              style={{ background: hasBalance ? '#F97316' : '#E2E8F0', color: hasBalance ? 'white' : '#94A3B8' }}>
+              {withdrawing ? '…' : '↑ Withdraw'}
+            </button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Total jobs', value: loading ? '…' : String(data?.totalJobs ?? 0), color: '#1E3A8A' },
+              { label: 'Jobs this month', value: loading ? '…' : String(data?.monthJobs ?? 0), color: '#F97316' },
+            ].map((s) => (
+              <div key={s.label} className="bg-white rounded-2xl p-5 border" style={{ borderColor: '#E2E8F0' }}>
+                <p className="text-2xl font-extrabold" style={{ color: s.color }}>{s.value}</p>
+                <p className="text-xs mt-1 font-medium" style={{ color: '#64748B' }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Jobs this week */}
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#64748B' }}>Jobs This Week</p>
+            {loading ? (
+              <div className="bg-white rounded-2xl p-8 text-center border" style={{ borderColor: '#E2E8F0' }}>
+                <p className="text-sm" style={{ color: '#94A3B8' }}>Loading…</p>
+              </div>
+            ) : !data?.recentJobs?.length ? (
+              <div className="bg-white rounded-2xl p-12 text-center border" style={{ borderColor: '#E2E8F0' }}>
+                <p className="text-4xl mb-3">📋</p>
+                <p className="font-bold mb-1" style={{ color: '#0F172A' }}>No jobs this week</p>
+                <p className="text-sm" style={{ color: '#64748B' }}>Jobs you deliver will appear here.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                {data.recentJobs.map((job) => (
+                  <div key={job.id} className="bg-white rounded-2xl p-4 border flex items-center gap-4"
+                    style={{ borderColor: '#E2E8F0' }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
+                      style={{ background: '#ECFDF5' }}>✅</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate" style={{ color: '#0F172A' }}>
+                        {job.pickupAddress?.split(',')[0]} → {job.dropoffAddress?.split(',')[0]}
+                      </p>
+                      <p className="text-xs mt-0.5" style={{ color: '#64748B' }}>
+                        {job.deliveredAt
+                          ? new Date(job.deliveredAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                          : ''}
+                      </p>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-sm font-extrabold" style={{ color: '#16A34A' }}>+£{job.driverEarnings?.toFixed(2)}</p>
+                      <span className="inline-block mt-1 px-2 py-0.5 rounded-md text-xs font-bold"
+                        style={{ background: '#ECFDF5', color: '#16A34A' }}>Paid</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
+          </div>
 
-            <div className="bg-white rounded-2xl p-6 border mb-6" style={{ borderColor: 'var(--border)' }}>
-              <h2 className="font-bold mb-2">Withdraw funds</h2>
-              <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>
-                Funds are paid to your linked bank account via Stripe. Available balance: <strong>£{(earnings?.availableBalance || 0).toFixed(2)}</strong>
-              </p>
-              <button onClick={requestWithdrawal}
-                disabled={withdrawing || !earnings?.availableBalance || earnings.availableBalance <= 0}
-                className="px-6 py-3 rounded-xl text-white font-bold text-sm disabled:opacity-40"
-                style={{ background: '#16A34A' }}>
-                {withdrawing ? 'Processing…' : 'Request withdrawal'}
-              </button>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border" style={{ borderColor: 'var(--border)' }}>
-              <h2 className="font-bold mb-2">How it works</h2>
-              <ul className="text-sm flex flex-col gap-2" style={{ color: 'var(--text-secondary)' }}>
-                <li>• You earn 85% of the total job price.</li>
-                <li>• Earnings are credited to your account when a job is delivered.</li>
-                <li>• Withdrawals are processed via Stripe and take 2–3 business days.</li>
-                <li>• You need a verified Stripe account linked in your profile to withdraw.</li>
-              </ul>
-            </div>
-          </>
-        )}
+          <div className="h-4" />
+        </div>
       </div>
     </DashboardLayout>
   );
