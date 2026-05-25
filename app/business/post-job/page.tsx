@@ -375,7 +375,7 @@ export default function PostJobPage() {
                   className={`${inputClass} pl-8`} style={inputStyle} placeholder="0" />
               </div>
               <p className="text-xs mt-1.5" style={{ color: 'var(--text-secondary)' }}>
-                Minimum £10. You set the price — drivers keep 85%.
+                Minimum £10. You set the price — drivers keep 88%.
               </p>
             </div>
 
@@ -383,11 +383,11 @@ export default function PostJobPage() {
               <div className="rounded-xl p-4 border" style={{ borderColor: 'var(--border)', background: 'var(--background)' }}>
                 <div className="flex justify-between text-sm">
                   <span style={{ color: 'var(--text-secondary)' }}>Driver earns</span>
-                  <span className="font-bold">£{(Number(totalPrice) * 0.85).toFixed(2)}</span>
+                  <span className="font-bold">£{(Number(totalPrice) * 0.88).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm mt-1">
-                  <span style={{ color: 'var(--text-secondary)' }}>Platform fee (15%)</span>
-                  <span className="font-bold">£{(Number(totalPrice) * 0.15).toFixed(2)}</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>Platform fee (12%)</span>
+                  <span className="font-bold">£{(Number(totalPrice) * 0.12).toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm mt-2 pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
                   <span className="font-bold">You pay</span>
