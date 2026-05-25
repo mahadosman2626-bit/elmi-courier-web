@@ -9,6 +9,7 @@ const businessNav = [
   { href: '/business', label: 'Dashboard', icon: '🏠' },
   { href: '/business/post-job', label: 'Post a job', icon: '➕' },
   { href: '/business/jobs', label: 'My jobs', icon: '📦' },
+  { href: '/business/analytics', label: 'Analytics', icon: '📊' },
   { href: '/business/account', label: 'Account', icon: '👤' },
 ];
 
