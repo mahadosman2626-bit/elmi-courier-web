@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
+import api from '@/lib/api';
 
 const businessNav = [
   { href: '/business', label: 'Dashboard', icon: '🏠' },
@@ -31,6 +32,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetch = () =>
+      api.get('/api/notifications/unread-count')
+        .then((r) => setUnread(r.data?.count ?? 0))
+        .catch(() => {});
+    fetch();
+    const interval = setInterval(fetch, 30000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   useEffect(() => {
     if (!loading && !user) router.replace('/login');
@@ -91,8 +104,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        {/* Sign out */}
+        {/* Notifications + Sign out */}
         <div className="p-2 border-t" style={{ borderColor: 'var(--border)' }}>
+          <button
+            onClick={() => { router.push('/notifications'); }}
+            title={collapsed ? 'Notifications' : undefined}
+            className="relative flex items-center gap-3 px-2.5 py-2.5 rounded-xl text-sm font-medium w-full transition-colors mb-1 hover:bg-gray-100"
+            style={{
+              color: pathname === '/notifications' ? 'var(--primary)' : 'var(--text-secondary)',
+              fontWeight: pathname === '/notifications' ? 700 : 500,
+              background: pathname === '/notifications' ? 'rgba(30,58,138,0.08)' : 'transparent',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+            }}>
+            <span className="relative flex-shrink-0 text-base">
+              🔔
+              {unread > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white flex items-center justify-center font-bold"
+                  style={{ background: '#EF4444', fontSize: 9, lineHeight: 1 }}>
+                  {unread > 9 ? '9+' : unread}
+                </span>
+              )}
+            </span>
+            {!collapsed && (
+              <span className="flex-1 text-left">
+                Notifications
+                {unread > 0 && (
+                  <span className="ml-2 px-1.5 py-0.5 rounded-full text-white font-bold"
+                    style={{ background: '#EF4444', fontSize: 10 }}>
+                    {unread > 9 ? '9+' : unread}
+                  </span>
+                )}
+              </span>
+            )}
+          </button>
           <button onClick={() => { logout(); router.replace('/'); }}
             title={collapsed ? 'Sign out' : undefined}
             className="flex items-center gap-2 text-sm font-semibold w-full px-2.5 py-2.5 rounded-xl hover:bg-red-50 transition-colors"
