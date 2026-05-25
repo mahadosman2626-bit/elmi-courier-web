@@ -156,24 +156,44 @@ export default function BusinessJobDetailPage() {
 
         {/* Rate driver */}
         {canRate && !ratingDone && (
-          <div className="bg-white rounded-2xl p-5 border mb-6" style={{ borderColor: 'var(--border)' }}>
-            <h2 className="text-sm font-bold mb-3">Rate your driver</h2>
-            <div className="flex gap-2 mb-3">
-              {[1, 2, 3, 4, 5].map((s) => (
+          <div className="bg-white rounded-2xl p-6 border mb-6" style={{ borderColor: '#E2E8F0' }}>
+            <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#64748B' }}>Job complete</p>
+            <p className="text-base font-extrabold mb-4" style={{ color: '#0F172A' }}>How was your driver?</p>
+            <div className="flex gap-3 mb-2">
+              {[1,2,3,4,5].map((s) => (
                 <button key={s} onClick={() => setRatingScore(s)}
-                  className="text-2xl transition-transform hover:scale-110"
-                  style={{ opacity: s <= ratingScore ? 1 : 0.3 }}>⭐</button>
+                  className="flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all"
+                  style={{
+                    borderColor: ratingScore === s ? '#F97316' : '#E2E8F0',
+                    background: ratingScore === s ? '#FFF7ED' : 'white',
+                  }}>
+                  <span className="text-2xl" style={{ filter: ratingScore >= s ? 'none' : 'grayscale(1)', opacity: ratingScore >= s ? 1 : 0.35 }}>⭐</span>
+                  <span className="text-xs font-semibold" style={{ color: ratingScore === s ? '#F97316' : '#94A3B8' }}>{s}</span>
+                </button>
               ))}
             </div>
-            <input value={ratingComment} onChange={(e) => setRatingComment(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border text-sm mb-3"
-              style={{ borderColor: 'var(--border)', background: 'var(--background)' }}
+            <p className="text-xs text-center mb-4" style={{ color: '#94A3B8' }}>
+              {ratingScore === 0 ? 'Tap a star to rate' : ['','Poor','Below average','Good','Great','Excellent!'][ratingScore]}
+            </p>
+            <textarea value={ratingComment} onChange={(e) => setRatingComment(e.target.value)}
+              rows={2}
+              className="w-full px-4 py-3 rounded-xl border text-sm mb-4 resize-none focus:outline-none"
+              style={{ borderColor: '#E2E8F0', background: '#F8FAFC', color: '#0F172A' }}
               placeholder="Leave a comment (optional)" />
             <button onClick={submitRating} disabled={ratingScore === 0}
-              className="px-5 py-2.5 rounded-xl text-white text-sm font-bold disabled:opacity-40"
-              style={{ background: 'var(--primary)' }}>
-              Submit rating
+              className="w-full py-3 rounded-xl text-white text-sm font-bold disabled:opacity-40 transition-opacity"
+              style={{ background: '#F97316' }}>
+              Submit rating →
             </button>
+          </div>
+        )}
+        {ratingDone && (
+          <div className="rounded-2xl p-5 mb-6 flex items-center gap-3" style={{ background: '#ECFDF5', border: '1px solid #86EFAC' }}>
+            <span className="text-2xl">🎉</span>
+            <div>
+              <p className="text-sm font-bold" style={{ color: '#16A34A' }}>Thanks for your rating!</p>
+              <p className="text-xs mt-0.5" style={{ color: '#15803D' }}>Your feedback helps maintain quality on Elmi.</p>
+            </div>
           </div>
         )}
 
