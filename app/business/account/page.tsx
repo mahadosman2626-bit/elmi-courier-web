@@ -34,8 +34,9 @@ export default function BusinessAccountPage() {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  const [stats, setStats] = useState({ totalJobs: 0, totalSpent: 0 });
+  const [stats, setStats] = useState({ totalJobs: 0, totalSpent: 0, avgRating: 0 });
   const [profile, setProfile] = useState<any>(null);
+  const [recentDrivers, setRecentDrivers] = useState<any[]>([]);
 
   // Edit profile modal
   const [editing, setEditing] = useState(false);
@@ -65,7 +66,12 @@ export default function BusinessAccountPage() {
     api.get('/api/business/jobs').then((res) => {
       const jobs = Array.isArray(res.data) ? res.data : res.data.jobs ?? [];
       const totalSpent = jobs.reduce((sum: number, j: any) => sum + (j.price || 0), 0);
-      setStats({ totalJobs: jobs.length, totalSpent });
+      const ratings = jobs.flatMap((j: any) => j.ratings ?? []).filter((r: any) => r.score);
+      const avgRating = ratings.length ? ratings.reduce((s: number, r: any) => s + r.score, 0) / ratings.length : 0;
+      setStats({ totalJobs: jobs.length, totalSpent, avgRating });
+    }).catch(() => {});
+    api.get('/api/jobs/recent-drivers').then((res) => {
+      setRecentDrivers(Array.isArray(res.data) ? res.data : []);
     }).catch(() => {});
   }, []);
 
@@ -127,14 +133,55 @@ export default function BusinessAccountPage() {
           {/* Stats row */}
           <div className="bg-white rounded-2xl flex divide-x shadow-sm" style={{ borderColor: 'var(--border)' }}>
             {[
-              { label: 'Jobs Posted', value: stats.totalJobs },
+              { label: 'Total Jobs', value: stats.totalJobs },
               { label: 'Total Spent', value: `£${stats.totalSpent.toFixed(0)}` },
+              { label: 'Avg Rating', value: stats.avgRating ? stats.avgRating.toFixed(1) : '—' },
             ].map((s) => (
               <div key={s.label} className="flex-1 flex flex-col items-center py-5">
                 <p className="text-xl font-extrabold" style={{ color: '#0F172A' }}>{s.value}</p>
                 <p className="text-xs mt-1" style={{ color: '#64748B' }}>{s.label}</p>
               </div>
             ))}
+          </div>
+
+          {/* Recent Drivers */}
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2.5" style={{ color: '#64748B' }}>Recent Drivers</p>
+            <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+              {recentDrivers.length === 0 ? (
+                <div className="flex items-center gap-3 px-4 py-5">
+                  <span className="text-2xl">🚐</span>
+                  <p className="text-sm" style={{ color: '#94A3B8' }}>No completed jobs yet</p>
+                </div>
+              ) : (
+                recentDrivers.slice(0, 5).map((driver: any, i: number) => {
+                  const initials = driver.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+                  const isLast = i === Math.min(recentDrivers.length, 5) - 1;
+                  return (
+                    <div key={driver.id} className="flex items-center gap-3 px-4 py-3.5"
+                      style={{ borderBottom: isLast ? 'none' : '1px solid var(--border)' }}>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                        style={{ background: i % 2 === 0 ? '#1E3A8A' : '#F97316' }}>
+                        {driver.driverProfile?.profilePhotoUrl
+                          ? <img src={driver.driverProfile.profilePhotoUrl} className="w-10 h-10 rounded-full object-cover" alt="" />
+                          : initials}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold truncate" style={{ color: '#0F172A' }}>{driver.name}</p>
+                        <p className="text-xs" style={{ color: '#64748B' }}>
+                          ⭐ {driver.driverProfile?.averageRating?.toFixed(1) ?? '—'} · {driver.driverProfile?.vanType ?? 'Van'} · {driver.driverProfile?.totalJobs ?? 0} jobs
+                        </p>
+                      </div>
+                      <button onClick={() => router.push('/business/post-job')}
+                        className="px-3 py-1.5 rounded-lg text-xs font-bold flex-shrink-0"
+                        style={{ background: '#EFF6FF', color: '#1E3A8A' }}>
+                        Book
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
 
           {/* Business Details */}
