@@ -57,6 +57,12 @@ export default function BusinessJobDetailPage() {
     fetchJob();
   };
 
+  const trackingUrl = typeof window !== 'undefined' ? `${window.location.origin}/track/${id}` : '';
+
+  const copyTrackingLink = () => {
+    navigator.clipboard.writeText(trackingUrl);
+  };
+
   if (loading) return <DashboardLayout><div className="p-8"><p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Loading…</p></div></DashboardLayout>;
   if (!job) return <DashboardLayout><div className="p-8"><p>Job not found.</p></div></DashboardLayout>;
 
@@ -75,6 +81,22 @@ export default function BusinessJobDetailPage() {
           </div>
           <StatusBadge status={job.status} />
         </div>
+
+        {/* Tracking link */}
+        {!['CANCELLED', 'DELIVERED'].includes(job.status) && (
+          <div className="bg-white rounded-2xl border px-5 py-4 mb-4 flex items-center gap-3" style={{ borderColor: 'var(--border)' }}>
+            <span className="text-lg">🔗</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold mb-0.5" style={{ color: 'var(--text-secondary)' }}>Share tracking link with recipient</p>
+              <p className="text-xs truncate font-mono" style={{ color: 'var(--text-secondary)' }}>{trackingUrl}</p>
+            </div>
+            <button onClick={copyTrackingLink}
+              className="flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold text-white"
+              style={{ background: 'var(--primary)' }}>
+              Copy
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {/* Job details */}
