@@ -5,10 +5,12 @@ import PublicNav from '@/components/PublicNav';
 import { useState } from 'react';
 
 const faqs = [
-  { q: 'How quickly can I get a driver?', a: 'Most jobs are accepted within minutes. Once a driver confirms, they head straight to your collection address.' },
-  { q: 'How much does it cost?', a: 'You set the price. elmi charges a 15% platform fee — the driver keeps the remaining 85%. No hidden charges, no surge pricing.' },
-  { q: 'What if something goes wrong?', a: 'Every driver carries valid hire & reward insurance and goods-in-transit cover. You are protected on every delivery.' },
-  { q: 'Do I need an account to post a job?', a: 'Yes — it only takes 2 minutes to create a free business account. No subscription, no setup fee.' },
+  { q: 'How quickly can I get a driver?', a: 'Most jobs are accepted within minutes of posting. Once a driver confirms, they head straight to your collection address.' },
+  { q: 'How much does it cost?', a: 'You set the price. Elmi charges a 12% platform fee — drivers keep 88%. No hidden charges, no surge pricing, no subscription.' },
+  { q: 'What if something goes wrong?', a: 'Every driver carries valid hire & reward insurance and goods-in-transit cover, verified by our team before they go live. Your goods are protected on every delivery.' },
+  { q: 'Do I need an account to post a job?', a: 'Yes — it only takes 2 minutes to create a free business account. No subscription, no setup fee. Pay only when your job is completed.' },
+  { q: 'How are drivers vetted?', a: 'Every driver submits a copy of their driving licence, hire & reward insurance, and goods-in-transit certificate. Our team reviews and approves each document before the driver can accept any jobs.' },
+  { q: 'Can I track the delivery live?', a: 'Yes. Share a live tracking link with whoever needs to receive the delivery. They can follow progress in real time without needing an account.' },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
@@ -18,7 +20,8 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <button onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-gray-50 transition-colors">
         <span className="text-sm font-semibold pr-4" style={{ color: '#0F172A' }}>{q}</span>
-        <span className="text-lg flex-shrink-0 transition-transform" style={{ transform: open ? 'rotate(45deg)' : 'none', color: 'var(--text-secondary)' }}>+</span>
+        <span className="text-lg flex-shrink-0 transition-transform duration-200"
+          style={{ transform: open ? 'rotate(45deg)' : 'none', color: 'var(--text-secondary)' }}>+</span>
       </button>
       {open && (
         <div className="px-6 pb-4">
@@ -37,39 +40,60 @@ export default function LandingPage() {
       <PublicNav />
 
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-28" style={{ background: 'var(--primary)' }}>
-        <div className="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6 tracking-widest" style={{ background: 'rgba(249,115,22,0.18)', color: '#F97316' }}>
-          SAME-DAY VAN DELIVERY · UK
+      <section className="flex flex-col items-center justify-center text-center px-6 pt-24 pb-20"
+        style={{ background: 'linear-gradient(170deg, #0B1628 0%, #0F172A 50%, #1A2E4A 100%)' }}>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-8 tracking-widest"
+          style={{ background: 'rgba(249,115,22,0.15)', color: '#F97316', border: '1px solid rgba(249,115,22,0.3)' }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block" />
+          SAME-DAY VAN DELIVERY &middot; UK
         </div>
-        <h1 className="text-5xl md:text-6xl font-extrabold text-white max-w-3xl leading-tight tracking-tight mb-6">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-white max-w-3xl leading-[1.08] tracking-tight mb-6">
           Book a vetted driver.<br /><span style={{ color: '#F97316' }}>In minutes.</span>
         </h1>
-        <p className="text-lg max-w-xl mb-10" style={{ color: 'rgba(255,255,255,0.65)' }}>
-          Post a job, pay securely, and track your delivery live. Every driver on elmi is verified — licence, insurance, and goods-in-transit cover checked before they go live.
+        <p className="text-lg max-w-xl mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          Post a job, pay securely, and track your delivery live. Every driver on Elmi is verified — licence, insurance, and goods-in-transit cover checked before they go live.
         </p>
-        <div className="flex gap-4 flex-wrap justify-center mb-10">
+        <div className="flex gap-4 flex-wrap justify-center mb-12">
           <button onClick={() => router.push('/register?role=business')}
-            className="px-8 py-4 rounded-2xl text-base font-bold text-white hover:opacity-90 transition-opacity"
+            className="px-8 py-4 rounded-2xl text-base font-bold text-white hover:opacity-90 transition-opacity shadow-lg"
             style={{ background: 'var(--accent)' }}>
-            Post a job →
+            Post a job &rarr;
           </button>
           <button onClick={() => router.push('/register?role=driver')}
-            className="px-8 py-4 rounded-2xl text-base font-bold text-white border-2 hover:bg-white/10 transition-colors"
-            style={{ borderColor: 'rgba(255,255,255,0.3)' }}>
+            className="px-8 py-4 rounded-2xl text-base font-bold hover:bg-white/10 transition-colors"
+            style={{ color: 'rgba(255,255,255,0.85)', border: '1.5px solid rgba(255,255,255,0.25)' }}>
             Become a driver
           </button>
         </div>
 
         {/* Trust bar */}
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 pt-4"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.5rem', maxWidth: '32rem' }}>
           {[
-            { icon: '✅', label: 'Driving licence verified' },
+            { icon: '✅', label: 'Licence verified' },
             { icon: '🛡️', label: 'Hire & reward insured' },
             { icon: '📦', label: 'Goods-in-transit covered' },
           ].map((t) => (
-            <div key={t.label} className="flex items-center gap-2 text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              <span>{t.icon}</span>
-              {t.label}
+            <div key={t.label} className="flex items-center gap-2 text-sm font-medium"
+              style={{ color: 'rgba(255,255,255,0.6)' }}>
+              <span>{t.icon}</span>{t.label}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Stats bar */}
+      <section className="py-10 px-6" style={{ background: '#F1F5F9' }}>
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {[
+            { value: '2 min', label: 'Average time to post a job' },
+            { value: '88%', label: 'Of every job goes to the driver' },
+            { value: '100%', label: 'Of drivers manually verified' },
+            { value: 'Live', label: 'Real-time delivery tracking' },
+          ].map((s) => (
+            <div key={s.label}>
+              <p className="text-3xl font-extrabold tracking-tight" style={{ color: '#0F172A' }}>{s.value}</p>
+              <p className="text-xs mt-1 font-medium" style={{ color: '#64748B' }}>{s.label}</p>
             </div>
           ))}
         </div>
@@ -78,17 +102,24 @@ export default function LandingPage() {
       {/* How it works */}
       <section className="py-20 px-6 max-w-5xl mx-auto w-full">
         <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: 'var(--accent)' }}>How it works</p>
-        <h2 className="text-3xl font-extrabold text-center mb-14 tracking-tight">From post to delivered in 3 steps</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <h2 className="text-3xl font-extrabold text-center mb-4 tracking-tight">From post to delivered in 3 steps</h2>
+        <p className="text-center mb-14 max-w-lg mx-auto text-sm" style={{ color: 'var(--text-secondary)' }}>
+          No phone calls, no waiting around. Post your job online and a driver comes to you.
+        </p>
+        <div className="grid md:grid-cols-3 gap-6">
           {[
-            { step: '01', icon: '📋', title: 'Post a job', desc: 'Enter pickup and drop-off addresses, describe your load, set your price. Takes under 2 minutes.' },
+            { step: '01', icon: '📋', title: 'Post a job', desc: 'Enter pickup and drop-off addresses, describe your load, and set your price. Takes under 2 minutes.' },
             { step: '02', icon: '🚐', title: 'Driver accepts', desc: 'A vetted driver nearby confirms your job and heads to the collection address. You get notified instantly.' },
-            { step: '03', icon: '📍', title: 'Track live', desc: 'Watch your delivery on a live map. Get notified at pickup, in transit, and on delivery.' },
+            { step: '03', icon: '📍', title: 'Track live', desc: 'Get real-time updates at pickup, in transit, and on delivery. Share a live link with your recipient.' },
           ].map((f) => (
-            <div key={f.title} className="bg-white rounded-2xl p-8 border relative" style={{ borderColor: 'var(--border)' }}>
+            <div key={f.title} className="bg-white rounded-2xl p-8 border relative hover:shadow-sm transition-shadow"
+              style={{ borderColor: 'var(--border)' }}>
               <span className="absolute top-6 right-6 text-xs font-bold" style={{ color: 'var(--accent)' }}>{f.step}</span>
-              <div className="text-4xl mb-4">{f.icon}</div>
-              <h3 className="text-lg font-bold mb-2">{f.title}</h3>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5"
+                style={{ background: '#F1F5F9' }}>
+                {f.icon}
+              </div>
+              <h3 className="text-base font-bold mb-2">{f.title}</h3>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{f.desc}</p>
             </div>
           ))}
@@ -96,23 +127,24 @@ export default function LandingPage() {
       </section>
 
       {/* Vetting section */}
-      <section className="py-20 px-6" style={{ background: 'var(--primary)' }}>
+      <section className="py-20 px-6" style={{ background: '#0F172A' }}>
         <div className="max-w-5xl mx-auto">
-          <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: '#F97316' }}>Every driver is verified</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: '#F97316' }}>Driver verification</p>
           <h2 className="text-3xl font-extrabold text-center mb-4 text-white tracking-tight">We check before they deliver</h2>
-          <p className="text-center mb-14 max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            No unverified drivers on elmi. Every application is reviewed by our team before a driver can accept a single job.
+          <p className="text-center mb-14 max-w-xl mx-auto text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            No self-reported info. Every document is reviewed and approved by our team before a driver can accept their first job.
           </p>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: '💳', title: 'UK Driving Licence', desc: 'Valid, current licence checked and approved by our team.' },
-              { icon: '🛡️', title: 'Hire & Reward Insurance', desc: 'Commercial insurance covering paid delivery work — not just social use.' },
-              { icon: '📦', title: 'Goods in Transit Cover', desc: 'Your goods are protected against loss or damage on every job.' },
+              { icon: '💳', title: 'UK Driving Licence', desc: 'Valid, current licence checked and confirmed by our team. No expired or foreign licences.' },
+              { icon: '🛡️', title: 'Hire & Reward Insurance', desc: 'Commercial insurance covering paid delivery work — not just social use cover.' },
+              { icon: '📦', title: 'Goods in Transit Cover', desc: 'Your goods are protected against loss or damage on every single delivery.' },
             ].map((v) => (
-              <div key={v.title} className="rounded-2xl p-6 border" style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
-                <p className="text-3xl mb-3">{v.icon}</p>
-                <p className="font-bold text-white mb-1">{v.title}</p>
-                <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{v.desc}</p>
+              <div key={v.title} className="rounded-2xl p-6"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <p className="text-3xl mb-4">{v.icon}</p>
+                <p className="font-bold text-white mb-1 text-sm">{v.title}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>{v.desc}</p>
               </div>
             ))}
           </div>
@@ -123,40 +155,57 @@ export default function LandingPage() {
       <section className="py-20 px-6 max-w-5xl mx-auto w-full">
         <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: 'var(--accent)' }}>Transparent pricing</p>
         <h2 className="text-3xl font-extrabold text-center mb-4 tracking-tight">You set the price. We keep it simple.</h2>
-        <p className="text-center mb-14 max-w-xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-center mb-14 max-w-xl mx-auto text-sm" style={{ color: 'var(--text-secondary)' }}>
           No subscription fees. No hidden charges. Pay only when your delivery is completed.
         </p>
         <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {[
-            { role: 'For businesses', icon: '🏪', points: ['You set the job price', '15% platform fee on completion', 'No subscription or sign-up cost', 'Pay securely via Stripe'] },
-            { role: 'For drivers', icon: '🚐', points: ['Keep 85% of every job', 'Instant earnings on delivery', 'Withdraw to bank in 2–3 days', 'No subscription to drive'] },
+            {
+              role: 'For businesses',
+              icon: '🏪',
+              color: '#1E3A8A',
+              points: ['You set the job price', '12% platform fee on completion', 'No subscription or sign-up cost', 'Secure payment via Stripe'],
+            },
+            {
+              role: 'For drivers',
+              icon: '🚐',
+              color: '#F97316',
+              points: ['Keep 88% of every job', 'Earnings credited on delivery', 'Withdraw to bank in 1–2 days', 'No subscription to start driving'],
+            },
           ].map((p) => (
             <div key={p.role} className="bg-white rounded-2xl p-8 border" style={{ borderColor: 'var(--border)' }}>
-              <p className="text-3xl mb-3">{p.icon}</p>
-              <p className="font-extrabold text-lg mb-4">{p.role}</p>
-              <ul className="flex flex-col gap-2">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4"
+                style={{ background: p.color + '12' }}>
+                {p.icon}
+              </div>
+              <p className="font-extrabold text-base mb-4">{p.role}</p>
+              <ul className="flex flex-col gap-2.5">
                 {p.points.map((pt) => (
-                  <li key={pt} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    <span style={{ color: '#10B981' }}>✓</span> {pt}
+                  <li key={pt} className="flex items-start gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                    <span className="font-bold mt-0.5" style={{ color: '#10B981' }}>&#10003;</span> {pt}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
+        <p className="text-center text-xs mt-6" style={{ color: '#94A3B8' }}>
+          Example: a £50 job &rarr; driver earns £44, Elmi keeps £6. That&apos;s it.
+        </p>
       </section>
 
       {/* Coverage */}
       <section className="py-16 px-6" style={{ background: '#F8FAFC' }}>
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--accent)' }}>Coverage</p>
-          <h2 className="text-2xl font-extrabold mb-4 tracking-tight">Available across the UK</h2>
-          <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
-            We are growing our driver network constantly. If there are no drivers in your area yet, check back soon.
+          <h2 className="text-2xl font-extrabold mb-3 tracking-tight">Available across the UK</h2>
+          <p className="text-sm mb-8 max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
+            We are growing our driver network constantly. If there are no drivers in your area yet, post a job and we&apos;ll match you as soon as one comes online.
           </p>
           <div className="flex flex-wrap justify-center gap-2">
             {['London', 'Birmingham', 'Manchester', 'Leeds', 'Liverpool', 'Sheffield', 'Bristol', 'Leicester', 'Coventry', 'Nottingham', 'Newcastle', 'Glasgow'].map((city) => (
-              <span key={city} className="px-4 py-2 rounded-full text-sm font-semibold bg-white border" style={{ borderColor: 'var(--border)', color: '#0F172A' }}>
+              <span key={city} className="px-4 py-2 rounded-full text-sm font-semibold bg-white border"
+                style={{ borderColor: 'var(--border)', color: '#0F172A' }}>
                 {city}
               </span>
             ))}
@@ -165,33 +214,35 @@ export default function LandingPage() {
       </section>
 
       {/* Driver recruitment */}
-      <section className="py-20 px-6" style={{ background: 'var(--primary)' }}>
+      <section className="py-20 px-6" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)' }}>
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6 tracking-widest" style={{ background: 'rgba(249,115,22,0.18)', color: '#F97316' }}>
+          <div className="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6 tracking-widest"
+            style={{ background: 'rgba(249,115,22,0.15)', color: '#F97316', border: '1px solid rgba(249,115,22,0.25)' }}>
             FOR DRIVERS
           </div>
           <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Drive on your terms.</h2>
-          <p className="text-lg mb-3" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          <p className="text-lg mb-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
             Choose your own hours. Accept only the jobs you want. Get paid instantly on delivery.
           </p>
-          <p className="text-2xl font-extrabold mb-10" style={{ color: '#F97316' }}>Keep 85% of every job.</p>
+          <p className="text-3xl font-extrabold mb-10" style={{ color: '#F97316' }}>Keep 88% of every job.</p>
           <div className="grid md:grid-cols-3 gap-4 mb-10">
             {[
-              { icon: '⏰', title: 'Your schedule', desc: 'Go online when you want. No minimum hours, no shifts.' },
-              { icon: '💷', title: 'Instant payouts', desc: 'Earnings credited the moment you mark a job delivered.' },
-              { icon: '📱', title: 'App + web', desc: 'Manage everything from the elmi app or this website.' },
+              { icon: '⏰', title: 'Your schedule', desc: 'Go online when you want. No minimum hours, no shifts, no fixed routes.' },
+              { icon: '💷', title: 'Instant payouts', desc: 'Earnings credited the moment you mark a job delivered. Withdraw anytime.' },
+              { icon: '📱', title: 'App + web', desc: 'Manage everything from the Elmi mobile app or this website.' },
             ].map((b) => (
-              <div key={b.title} className="rounded-2xl p-5 text-left border" style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}>
-                <p className="text-2xl mb-2">{b.icon}</p>
+              <div key={b.title} className="rounded-2xl p-5 text-left"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <p className="text-2xl mb-3">{b.icon}</p>
                 <p className="font-bold text-white mb-1 text-sm">{b.title}</p>
-                <p className="text-xs" style={{ color: 'rgba(255,255,255,0.55)' }}>{b.desc}</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>{b.desc}</p>
               </div>
             ))}
           </div>
           <button onClick={() => router.push('/register?role=driver')}
-            className="px-8 py-4 rounded-2xl text-base font-bold text-white"
+            className="px-8 py-4 rounded-2xl text-base font-bold text-white hover:opacity-90 transition-opacity"
             style={{ background: 'var(--accent)' }}>
-            Apply to drive →
+            Apply to drive &rarr;
           </button>
         </div>
       </section>
@@ -205,25 +256,28 @@ export default function LandingPage() {
         </div>
         <p className="text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
           More questions?{' '}
-          <a href="/faq" className="font-semibold hover:underline" style={{ color: 'var(--primary)' }}>See the full FAQ</a>
-          {' '}or{' '}
-          <a href="/contact" className="font-semibold hover:underline" style={{ color: 'var(--primary)' }}>contact us</a>.
+          <a href="mailto:support@elmicouriers.co.uk" className="font-semibold hover:underline" style={{ color: 'var(--primary)' }}>
+            Contact support
+          </a>
         </p>
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 px-6 text-center" style={{ background: 'var(--primary)' }}>
-        <h2 className="text-3xl font-extrabold text-white mb-4">Ready to send your first delivery?</h2>
-        <p className="mb-8" style={{ color: 'rgba(255,255,255,0.6)' }}>Create a free account and post your first job today. No subscription required.</p>
+      <section className="py-20 px-6 text-center" style={{ background: '#0F172A' }}>
+        <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#F97316' }}>Get started today</p>
+        <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">Ready to ship?</h2>
+        <p className="mb-10 text-lg max-w-md mx-auto" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          Create a free account and post your first job. No subscription, no setup fee.
+        </p>
         <div className="flex gap-4 flex-wrap justify-center">
           <button onClick={() => router.push('/register?role=business')}
-            className="px-8 py-4 rounded-2xl text-base font-bold text-white"
+            className="px-8 py-4 rounded-2xl text-base font-bold text-white hover:opacity-90 transition-opacity shadow-lg"
             style={{ background: 'var(--accent)' }}>
-            Create free account →
+            Post your first job &rarr;
           </button>
           <button onClick={() => router.push('/login')}
-            className="px-8 py-4 rounded-2xl text-base font-bold text-white border-2 hover:bg-white/10 transition-colors"
-            style={{ borderColor: 'rgba(255,255,255,0.3)' }}>
+            className="px-8 py-4 rounded-2xl text-base font-bold hover:bg-white/10 transition-colors"
+            style={{ color: 'rgba(255,255,255,0.8)', border: '1.5px solid rgba(255,255,255,0.25)' }}>
             Sign in
           </button>
         </div>
