@@ -38,7 +38,7 @@ export default function LoginPage() {
 
         <div>
           <h2 className="text-4xl font-extrabold text-white leading-tight mb-4 tracking-tight">
-            Same-day van delivery.<br />
+            Trusted van delivery.<br />
             <span style={{ color: '#F97316' }}>Built for UK businesses.</span>
           </h2>
           <p className="text-base mb-10" style={{ color: 'rgba(255,255,255,0.55)' }}>
@@ -100,6 +100,14 @@ export default function LoginPage() {
               style={{ background: '#1E3A8A' }}>
               {loading ? 'Signing in…' : 'Sign in →'}
             </button>
+
+            <div className="text-right mt-2">
+              <button onClick={() => router.push('/forgot-password')}
+                className="text-xs font-semibold hover:underline"
+                style={{ color: '#64748B' }}>
+                Forgot password?
+              </button>
+            </div>
           </form>
 
           <div className="flex items-center gap-3 my-6">

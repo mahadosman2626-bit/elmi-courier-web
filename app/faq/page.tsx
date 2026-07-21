@@ -75,7 +75,7 @@ const faqs = [
       },
       {
         q: 'How do I contact support?',
-        a: 'Email us at support@elmicourier.co.uk or use the Support option in your profile. We aim to respond within 24 hours on business days.',
+        a: 'Email us at support@elmicouriers.co.uk or use the Support option in your profile. We aim to respond within 24 hours on business days.',
       },
     ],
   },
@@ -108,7 +108,7 @@ export default function FAQPage() {
       <section className="py-20 px-6 text-center" style={{ background: 'var(--primary)' }}>
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-4">Frequently asked questions</h1>
         <p className="text-lg max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.65)' }}>
-          Everything you need to know about elmi. Can't find the answer? <a href="mailto:support@elmicourier.co.uk" className="underline text-white">Drop us an email.</a>
+          Everything you need to know about elmi. Can't find the answer? <a href="mailto:support@elmicouriers.co.uk" className="underline text-white">Drop us an email.</a>
         </p>
       </section>
 
@@ -130,7 +130,7 @@ export default function FAQPage() {
           <p className="text-2xl mb-3">💬</p>
           <h3 className="font-bold mb-2">Still have questions?</h3>
           <p className="text-sm mb-4" style={{ color: 'var(--text-secondary)' }}>Our team is happy to help.</p>
-          <a href="mailto:support@elmicourier.co.uk"
+          <a href="mailto:support@elmicouriers.co.uk"
             className="inline-block px-6 py-3 rounded-xl text-white text-sm font-bold"
             style={{ background: 'var(--primary)' }}>
             Email support

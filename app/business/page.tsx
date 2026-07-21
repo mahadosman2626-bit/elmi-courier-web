@@ -97,6 +97,21 @@ export default function BusinessDashboard() {
             </button>
           )}
 
+          {/* Quick actions */}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { icon: '📋', label: 'All Jobs', href: '/business/jobs' },
+              { icon: '📊', label: 'Analytics', href: '/business/analytics' },
+            ].map((a) => (
+              <button key={a.href} onClick={() => router.push(a.href)}
+                className="bg-white rounded-2xl py-4 px-5 border text-left hover:shadow-sm transition-shadow"
+                style={{ borderColor: '#E2E8F0' }}>
+                <span className="text-xl">{a.icon}</span>
+                <p className="text-sm font-bold mt-2" style={{ color: '#0F172A' }}>{a.label}</p>
+              </button>
+            ))}
+          </div>
+
           {/* Recent jobs */}
           <div>
             <div className="flex items-center justify-between mb-3">

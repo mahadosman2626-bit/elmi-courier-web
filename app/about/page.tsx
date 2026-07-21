@@ -11,7 +11,7 @@ export default function AboutPage() {
       <section className="py-20 px-6 text-center" style={{ background: 'var(--primary)' }}>
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-4">About elmi</h1>
         <p className="text-lg max-w-xl mx-auto" style={{ color: 'rgba(255,255,255,0.65)' }}>
-          We're building the UK's most trusted same-day courier marketplace — connecting businesses with professional van drivers.
+          We're building the UK's most trusted courier marketplace — connecting businesses with professional van drivers.
         </p>
       </section>
 
@@ -29,7 +29,7 @@ export default function AboutPage() {
         <div className="bg-white rounded-2xl p-8 border" style={{ borderColor: 'var(--border)' }}>
           <h2 className="text-xl font-extrabold mb-3">How it started</h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            elmi was founded after seeing how fragmented and frustrating same-day delivery was for small and medium businesses in the UK. Existing platforms were expensive, slow, or designed for enterprise clients. We built elmi from the ground up to be fast, transparent, and fair — for both businesses and drivers.
+            elmi was founded after seeing how fragmented and frustrating courier delivery was for small and medium businesses in the UK. Existing platforms were expensive, slow, or designed for enterprise clients. We built elmi from the ground up to be fast, transparent, and fair — for both businesses and drivers.
           </p>
         </div>
 
@@ -58,9 +58,9 @@ export default function AboutPage() {
             We're a small team that genuinely cares. If you have a question, a problem, or an idea — we want to hear from you.
           </p>
           <div className="flex flex-col gap-2 text-sm">
-            <p><span className="font-semibold">General enquiries:</span> <a href="mailto:hello@elmicourier.co.uk" className="hover:underline" style={{ color: 'var(--primary)' }}>hello@elmicourier.co.uk</a></p>
-            <p><span className="font-semibold">Driver support:</span> <a href="mailto:drivers@elmicourier.co.uk" className="hover:underline" style={{ color: 'var(--primary)' }}>drivers@elmicourier.co.uk</a></p>
-            <p><span className="font-semibold">Business support:</span> <a href="mailto:support@elmicourier.co.uk" className="hover:underline" style={{ color: 'var(--primary)' }}>support@elmicourier.co.uk</a></p>
+            <p><span className="font-semibold">General enquiries:</span> <a href="mailto:hello@elmicouriers.co.uk" className="hover:underline" style={{ color: 'var(--primary)' }}>hello@elmicouriers.co.uk</a></p>
+            <p><span className="font-semibold">Driver support:</span> <a href="mailto:drivers@elmicouriers.co.uk" className="hover:underline" style={{ color: 'var(--primary)' }}>drivers@elmicouriers.co.uk</a></p>
+            <p><span className="font-semibold">Business support:</span> <a href="mailto:support@elmicouriers.co.uk" className="hover:underline" style={{ color: 'var(--primary)' }}>support@elmicouriers.co.uk</a></p>
           </div>
         </div>
       </div>

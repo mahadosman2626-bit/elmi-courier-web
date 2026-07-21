@@ -11,7 +11,7 @@ export default function ContactPage() {
   const [sent, setSent] = useState(false);
 
   const handleSubmit = () => {
-    const mailto = `mailto:support@elmicourier.co.uk?subject=${encodeURIComponent(subject || 'Enquiry from ' + name)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
+    const mailto = `mailto:support@elmicouriers.co.uk?subject=${encodeURIComponent(subject || 'Enquiry from ' + name)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`;
     window.location.href = mailto;
     setSent(true);
   };
@@ -36,10 +36,10 @@ export default function ContactPage() {
         {/* Contact details */}
         <div className="flex flex-col gap-4 md:w-64 flex-shrink-0">
           {[
-            { icon: '📧', label: 'General enquiries', value: 'hello@elmicourier.co.uk', href: 'mailto:hello@elmicourier.co.uk' },
-            { icon: '🚐', label: 'Driver support', value: 'drivers@elmicourier.co.uk', href: 'mailto:drivers@elmicourier.co.uk' },
-            { icon: '🏪', label: 'Business support', value: 'support@elmicourier.co.uk', href: 'mailto:support@elmicourier.co.uk' },
-            { icon: '⚖️', label: 'Legal', value: 'legal@elmicourier.co.uk', href: 'mailto:legal@elmicourier.co.uk' },
+            { icon: '📧', label: 'General enquiries', value: 'hello@elmicouriers.co.uk', href: 'mailto:hello@elmicouriers.co.uk' },
+            { icon: '🚐', label: 'Driver support', value: 'drivers@elmicouriers.co.uk', href: 'mailto:drivers@elmicouriers.co.uk' },
+            { icon: '🏪', label: 'Business support', value: 'support@elmicouriers.co.uk', href: 'mailto:support@elmicouriers.co.uk' },
+            { icon: '⚖️', label: 'Legal', value: 'legal@elmicouriers.co.uk', href: 'mailto:legal@elmicouriers.co.uk' },
           ].map((c) => (
             <div key={c.label} className="bg-white rounded-2xl p-5 border" style={{ borderColor: 'var(--border)' }}>
               <p className="text-2xl mb-2">{c.icon}</p>
@@ -57,7 +57,7 @@ export default function ContactPage() {
               <h2 className="text-xl font-extrabold mb-2">Message ready to send</h2>
               <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
                 Your email client should have opened. If it didn't,{' '}
-                <a href="mailto:support@elmicourier.co.uk" className="underline font-semibold" style={{ color: 'var(--primary)' }}>
+                <a href="mailto:support@elmicouriers.co.uk" className="underline font-semibold" style={{ color: 'var(--primary)' }}>
                   email us directly
                 </a>.
               </p>

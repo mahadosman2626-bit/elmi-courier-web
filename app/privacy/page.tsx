@@ -29,7 +29,7 @@ const sections = [
   },
   {
     title: '7. Your rights',
-    body: 'Under UK GDPR you have the right to: access your personal data; correct inaccurate data; request erasure ("right to be forgotten"); restrict processing; data portability; and object to processing. To exercise these rights, contact us at privacy@elmicourier.co.uk.',
+    body: 'Under UK GDPR you have the right to: access your personal data; correct inaccurate data; request erasure ("right to be forgotten"); restrict processing; data portability; and object to processing. To exercise these rights, contact us at privacy@elmicouriers.co.uk.',
   },
   {
     title: '8. Security',
@@ -69,7 +69,7 @@ export default function PrivacyPage() {
         </div>
 
         <p className="text-xs text-center mt-8" style={{ color: 'var(--text-secondary)' }}>
-          Questions? Contact us at <strong>privacy@elmicourier.co.uk</strong>
+          Questions? Contact us at <strong>privacy@elmicouriers.co.uk</strong>
         </p>
       </div>
       <Footer />

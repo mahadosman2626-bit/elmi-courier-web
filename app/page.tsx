@@ -45,10 +45,10 @@ export default function LandingPage() {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-8 tracking-widest"
           style={{ background: 'rgba(249,115,22,0.15)', color: '#F97316', border: '1px solid rgba(249,115,22,0.3)' }}>
           <span className="w-1.5 h-1.5 rounded-full bg-orange-400 inline-block" />
-          SAME-DAY VAN DELIVERY &middot; UK
+          TRUSTED DELIVERY &middot; UK
         </div>
         <h1 className="text-5xl md:text-6xl font-extrabold text-white max-w-3xl leading-[1.08] tracking-tight mb-6">
-          Book a vetted driver.<br /><span style={{ color: '#F97316' }}>In minutes.</span>
+          A real driver.<br />A real van.<br /><span style={{ color: '#F97316' }}>Trusted.</span>
         </h1>
         <p className="text-lg max-w-xl mb-10 leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
           Post a job, pay securely, and track your delivery live. Every driver on Elmi is verified — licence, insurance, and goods-in-transit cover checked before they go live.
@@ -100,7 +100,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 px-6 max-w-5xl mx-auto w-full">
+      <section id="how-it-works" className="py-20 px-6 max-w-5xl mx-auto w-full">
         <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: 'var(--accent)' }}>How it works</p>
         <h2 className="text-3xl font-extrabold text-center mb-4 tracking-tight">From post to delivered in 3 steps</h2>
         <p className="text-center mb-14 max-w-lg mx-auto text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -152,7 +152,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section className="py-20 px-6 max-w-5xl mx-auto w-full">
+      <section id="pricing" className="py-20 px-6 max-w-5xl mx-auto w-full">
         <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: 'var(--accent)' }}>Transparent pricing</p>
         <h2 className="text-3xl font-extrabold text-center mb-4 tracking-tight">You set the price. We keep it simple.</h2>
         <p className="text-center mb-14 max-w-xl mx-auto text-sm" style={{ color: 'var(--text-secondary)' }}>
@@ -194,8 +194,63 @@ export default function LandingPage() {
         </p>
       </section>
 
+      {/* Testimonials */}
+      <section className="py-20 px-6" style={{ background: '#F8FAFC' }}>
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-bold uppercase tracking-widest text-center mb-3" style={{ color: 'var(--accent)' }}>Social proof</p>
+          <h2 className="text-3xl font-extrabold text-center mb-12 tracking-tight">Businesses that ship with Elmi</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                quote: "We moved our whole weekly distribution over to Elmi. The drivers turn up on time and the live tracking means our customers always know where their order is.",
+                name: "James R.",
+                role: "Operations Manager",
+                company: "Bristol Kitchens Ltd",
+                initial: "J",
+              },
+              {
+                quote: "Used three different courier apps before this. Elmi is the only one where I can actually see the driver is insured before I hand over the goods.",
+                name: "Priya M.",
+                role: "Founder",
+                company: "PM Florals, Birmingham",
+                initial: "P",
+              },
+              {
+                quote: "Posted my first job at 9am, driver picked up at 9:22. That's it. I don't have time to chase couriers — Elmi just works.",
+                name: "Dan W.",
+                role: "Director",
+                company: "Westfield Supplies, Manchester",
+                initial: "D",
+              },
+            ].map((t) => (
+              <div key={t.name} className="bg-white rounded-2xl p-7 border flex flex-col gap-4"
+                style={{ borderColor: 'var(--border)' }}>
+                <div className="flex gap-0.5 mb-1">
+                  {[1,2,3,4,5].map((s) => (
+                    <span key={s} style={{ color: '#FCD34D', fontSize: 14 }}>★</span>
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed flex-1" style={{ color: '#374151' }}>
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <div className="flex items-center gap-3 pt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                    style={{ background: 'var(--primary)' }}>
+                    {t.initial}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: '#0F172A' }}>{t.name}</p>
+                    <p className="text-xs" style={{ color: '#94A3B8' }}>{t.role} · {t.company}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Coverage */}
-      <section className="py-16 px-6" style={{ background: '#F8FAFC' }}>
+      <section className="py-16 px-6" style={{ background: '#F1F5F9' }}>
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--accent)' }}>Coverage</p>
           <h2 className="text-2xl font-extrabold mb-3 tracking-tight">Available across the UK</h2>
@@ -214,7 +269,7 @@ export default function LandingPage() {
       </section>
 
       {/* Driver recruitment */}
-      <section className="py-20 px-6" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)' }}>
+      <section id="for-drivers" className="py-20 px-6" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)' }}>
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6 tracking-widest"
             style={{ background: 'rgba(249,115,22,0.15)', color: '#F97316', border: '1px solid rgba(249,115,22,0.25)' }}>

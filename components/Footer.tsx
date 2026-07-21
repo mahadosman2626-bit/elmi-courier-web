@@ -9,7 +9,7 @@ export default function Footer() {
             <span className="text-lg font-extrabold tracking-tight text-white">
               elmi<span style={{ color: 'var(--accent)' }}>.</span>
             </span>
-            <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>Same-day van delivery · UK</p>
+            <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>Trusted delivery · UK</p>
           </div>
 
           <nav className="flex flex-wrap gap-x-6 gap-y-2">
@@ -32,7 +32,7 @@ export default function Footer() {
         <div className="mt-6 pt-6 flex flex-col md:flex-row items-center justify-between gap-2 text-xs border-t"
           style={{ borderColor: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.4)' }}>
           <p>© {new Date().getFullYear()} Elmi Courier Ltd · Registered in England & Wales</p>
-          <p>support@elmicourier.co.uk</p>
+          <a href="mailto:support@elmicouriers.co.uk" style={{ color: 'rgba(255,255,255,0.4)' }}>support@elmicouriers.co.uk</a>
         </div>
       </div>
     </footer>

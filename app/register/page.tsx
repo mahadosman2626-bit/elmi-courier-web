@@ -12,7 +12,7 @@ const BUSINESS_PERKS = [
 ];
 
 const DRIVER_PERKS = [
-  { icon: '💷', text: 'Keep 85% of every job — instant payout' },
+  { icon: '💷', text: 'Keep 88% of every job — instant payout' },
   { icon: '⏰', text: 'Choose your own hours — no shifts' },
   { icon: '📱', text: 'Manage everything from the app or web' },
   { icon: '✅', text: 'Quick verification — start earning fast' },

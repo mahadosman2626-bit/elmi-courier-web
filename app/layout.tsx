@@ -4,7 +4,7 @@ import { AuthProvider } from '@/context/AuthContext';
 
 export const metadata: Metadata = {
   title: 'Elmi Courier',
-  description: 'Same-day van delivery across the UK',
+  description: 'Trusted van delivery across the UK',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

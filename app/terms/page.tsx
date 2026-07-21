@@ -69,7 +69,7 @@ export default function TermsPage() {
         </div>
 
         <p className="text-xs text-center mt-8" style={{ color: 'var(--text-secondary)' }}>
-          Questions? Contact us at <strong>legal@elmicourier.co.uk</strong>
+          Questions? Contact us at <strong>legal@elmicouriers.co.uk</strong>
         </p>
       </div>
       <Footer />

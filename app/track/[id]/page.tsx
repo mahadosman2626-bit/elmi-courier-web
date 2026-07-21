@@ -151,7 +151,7 @@ export default function TrackingPage() {
             <p className="text-sm mb-6" style={{ color: '#64748B' }}>
               This tracking link may have expired or is incorrect. Check your confirmation message for the correct link.
             </p>
-            <a href="mailto:support@elmicourier.co.uk"
+            <a href="mailto:support@elmicouriers.co.uk"
               className="inline-block px-6 py-3 rounded-xl text-white text-sm font-bold"
               style={{ background: '#1E3A8A' }}>
               Contact support
@@ -364,7 +364,7 @@ export default function TrackingPage() {
             <div className="text-center pb-2">
               <p className="text-xs" style={{ color: '#94A3B8' }}>
                 Problem with this delivery?{' '}
-                <a href="mailto:support@elmicourier.co.uk" className="font-semibold hover:underline" style={{ color: '#1E3A8A' }}>
+                <a href="mailto:support@elmicouriers.co.uk" className="font-semibold hover:underline" style={{ color: '#1E3A8A' }}>
                   Contact support
                 </a>
               </p>
@@ -378,7 +378,7 @@ export default function TrackingPage() {
         <button onClick={() => router.push('/')} className="text-sm font-extrabold" style={{ color: '#1E3A8A' }}>
           elmi<span style={{ color: '#F97316' }}>.</span>
         </button>
-        <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>Same-day van delivery · UK</p>
+        <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>Trusted delivery · UK</p>
       </div>
     </div>
   );

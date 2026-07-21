@@ -245,6 +245,7 @@ export default function AdminDashboard() {
                     { title: 'Manage jobs', desc: 'View and cancel any job', href: '/admin/jobs', icon: '📦', color: '#1E3A8A' },
                     { title: 'Manage drivers', desc: 'Verify documents & approve', href: '/admin/drivers', icon: '🚐', color: '#7C3AED' },
                     { title: 'Manage businesses', desc: 'Verify business accounts', href: '/admin/businesses', icon: '🏪', color: '#0891B2' },
+                    { title: 'Analytics', desc: 'Revenue, leaderboards & trends', href: '/admin/analytics', icon: '📊', color: '#059669' },
                   ].map((card) => (
                     <button key={card.title} onClick={() => router.push(card.href)}
                       className="bg-white rounded-2xl p-5 border text-left hover:shadow-sm transition-shadow flex items-center gap-4"

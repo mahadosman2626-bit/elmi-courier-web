@@ -58,6 +58,7 @@ export default function BusinessJobDetailPage() {
   };
 
   const trackingUrl = typeof window !== 'undefined' ? `${window.location.origin}/track/${id}` : '';
+  const invoiceUrl = typeof window !== 'undefined' ? `${window.location.origin}/invoice/${id}` : `/invoice/${id}`;
 
   const copyTrackingLink = () => {
     navigator.clipboard.writeText(trackingUrl);
@@ -118,7 +119,16 @@ export default function BusinessJobDetailPage() {
           {/* Price & driver */}
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-5 border" style={{ borderColor: 'var(--border)' }}>
-              <h2 className="text-sm font-bold mb-3">Payment</h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-bold">Payment</h2>
+                {job.status === 'DELIVERED' && (
+                  <a href={invoiceUrl} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg"
+                    style={{ background: '#F8FAFC', color: 'var(--primary)', border: '1px solid var(--border)' }}>
+                    📄 Invoice
+                  </a>
+                )}
+              </div>
               <dl className="flex flex-col gap-2 text-sm">
                 <div className="flex justify-between"><dt style={{ color: 'var(--text-secondary)' }}>Total paid</dt><dd className="font-extrabold text-lg">£{job.totalPrice.toFixed(2)}</dd></div>
                 <div className="flex justify-between"><dt style={{ color: 'var(--text-secondary)' }}>Driver earns</dt><dd className="font-medium">£{job.driverEarnings?.toFixed(2)}</dd></div>

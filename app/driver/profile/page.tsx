@@ -267,7 +267,7 @@ export default function DriverProfilePage() {
               <MenuItem iconColor="#64748B" icon="🔒" label="Change Password" onClick={() => setChangingPw(true)} />
               <MenuItem iconColor="#F97316" icon="📄" label="Terms of Service" onClick={() => router.push('/terms')} />
               <MenuItem iconColor="#1E3A8A" icon="🛡️" label="Privacy Policy" onClick={() => router.push('/privacy')} />
-              <MenuItem iconColor="#10B981" icon="💬" label="Support" onClick={() => alert('Contact us at support@elmicourier.co.uk')} last />
+              <MenuItem iconColor="#10B981" icon="💬" label="Support" onClick={() => alert('Contact us at support@elmicouriers.co.uk')} last />
             </div>
           </div>
 
