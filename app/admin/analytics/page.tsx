@@ -30,7 +30,7 @@ const MEDAL = ['🥇', '🥈', '🥉'];
 
 function BarChart({ data, valueKey, color, formatValue }: {
   data: MonthData[];
-  valueKey: 'revenue' | 'jobs';
+  valueKey: 'revenue' | 'jobs' | 'platformFee';
   color: string;
   formatValue: (v: number) => string;
 }) {
